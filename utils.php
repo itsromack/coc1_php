@@ -4,22 +4,27 @@
 */
 function login($username, $password)
 {
+	$_SESSION['is_logged_in'] = FALSE;	// initial value
+
 	$query = "SELECT *, DATEDIFF(expiry_date, NOW()) AS days_left
 	            FROM users WHERE username LIKE '{$username}' 
 	            AND password LIKE '{$password}'";
 	$result = mysql_query($query) 
 	            or die('Query failed: ' . mysql_error());
 	
-	if(mysql_num_rows($result) > 0){
+	if(mysql_num_rows($result) > 0)
+	{
 	    $_SESSION['user'] = null;
 		$user = mysql_fetch_assoc($result);
 
-		if($user['is_disabled'] == 1){
+		if($user['is_disabled'] == 1)
+		{
 			$_SESSION['message'] = 'Account Disabled';
 			return false;
 		}
 
-		if($user['days_left'] < 1){
+		if($user['days_left'] < 1)
+		{
 			$_SESSION['message'] = 'Expired User Account';
 			return false;
 		}
@@ -28,6 +33,8 @@ function login($username, $password)
 
 		// remove error message on session once logged in
 		if(isset($_SESSION['message'])) unset($_SESSION['message']);
+
+		$_SESSION['is_logged_in'] = TRUE;
 
 		return true;
 	} else {
@@ -44,8 +51,10 @@ function get_all_books()
 	$query = "SELECT * FROM books";
 	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
 	$books = array();
-	if(mysql_num_rows($result) > 0){
-		while($row = mysql_fetch_assoc($result)){
+	if(mysql_num_rows($result) > 0)
+	{
+		while($row = mysql_fetch_assoc($result))
+		{
 			$books[] = $row;
 		}
 	}
@@ -65,8 +74,11 @@ function search_books($isbn='', $title='', $publisher='', $author='', $copyright
 		" OR copyright = {$copyright}";
 	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
 	$books = array();
-	if(mysql_num_rows($result) > 0){
-		while($row = mysql_fetch_assoc($result)){
+
+	if(mysql_num_rows($result) > 0)
+	{
+		while($row = mysql_fetch_assoc($result))
+		{
 			$books[] = $row;
 		}
 	}
@@ -113,13 +125,72 @@ function remove_from_cart($isbn)
 	return false;
 }
 
+/**
+* reserve all books
+*/
 function reserve_books()
 {
 	$user = $_SESSION['user'];
 	$books = $_SESSION['user']['cart'];
-	//
-	// TODO: add reserve books script
-	//
+
+	if(count($books) > 0)
+	{
+		$query = "INSERT INTO reserved_books (isbn, user_id, reserved_date) VALUES ";
+		$values = array();
+		foreach ($books as $book)
+		{
+			$values[] = "('{$book}', '{$user['id']}', NOW())";	// NOW() is a MySQL Date Function
+		}
+		$values = implode(',', $values);
+		$query .= $query . $values;
+
+		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+
+		if(mysql_affected_rows() > 0)
+		{
+			$_SESSION['message'] = 'Reserved books';
+			return TRUE;
+		}
+		else 
+		{
+			$_SESSION['message'] = 'Unable to reserve books';
+			return FALSE;
+		}
+	}
 }
 
+function get_reserved_book($reservation_id)
+{
+	$query = "SELECT * FROM reserved_books WHERE id = $reservation_id";
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+
+	if(mysql_num_rows($result) > 0)
+	{
+		$reserved_book = mysql_fetch_assoc($result);
+	}
+}
+
+/**
+* borrow books
+*   - grant reserved book for borrowing
+*      using reservation ID (which contains ISBN and UserID)
+*   - delete reserve record once added into borrowed books table
+*/
+function borrow_book($reservation_id)
+{
+	// TODO
+	$query = "INSERT INTO borrowed_books (isbn, user_id, date_borrowed, is_returned) ".
+		"(SELECT isbn, user_id, NOW(), 0 FROM reserved_books WHERE id = {$reservation_id})";
+}
+
+/**
+* return books
+*/
+function return_books($borrowed_book_id)
+{
+	// TODO
+	$query = "UPDATE borrowed_books SET ".
+		" is_returned = 1, date_returned = NOW(), [DAYS_PENALTY]"
+		" WHERE id = {$borrowed_book_id}";
+}
 ?>
