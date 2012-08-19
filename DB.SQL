@@ -17,9 +17,9 @@ CREATE TABLE `books` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `books` (`id`, `isbn`, `title`, `publisher`, `author`, `copyright`) VALUES
-(1,	'ABC1234567890',	'Ibong Adarna',	'Publishers',	'Florante',	1800),
-(2,	'XYZ27638276348767',	'Noli Me Tangere',	'Publishers',	'Jose Rizal',	1800),
-(3,	'EFG23237462837468',	'El Filibusterismo',	'Publishers',	'Jose Rizal',	1800);
+(1, 'ABC1234567890',  'Ibong Adarna', 'Publishers', 'Florante', 1800),
+(2, 'XYZ27638276348767',  'Noli Me Tangere',  'Publishers', 'Jose Rizal', 1800),
+(3, 'EFG23237462837468',  'El Filibusterismo',  'Publishers', 'Jose Rizal', 1800);
 
 DROP TABLE IF EXISTS `borrowed_books`;
 CREATE TABLE `borrowed_books` (
@@ -59,8 +59,8 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `users` (`id`, `username`, `password`, `expiry_date`, `type`) VALUES
-(1,	'superuser',	'secret123',	'0000-00-00',	'admin'),
-(2,	'normaluser',	'secret123',	'0000-00-00',	'normal'),
-(3,	'expireduser',	'secret123',	'0000-00-00',	'normal');
+(1, 'superuser',  'secret123',  '2013-01-01', 'admin'),
+(2, 'normaluser', 'secret123',  '2013-01-01', 'normal'),
+(3, 'expireduser',  'secret123',  '2012-01-01', 'normal');
 
--- 2012-08-19 18:41:11
+-- 2012-08-19 19:25:41
