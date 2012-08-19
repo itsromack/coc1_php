@@ -29,6 +29,10 @@ function login($username, $password)
 		        'username' => $username,
 		        'type' => $user['type']
 		    );
+
+		// remove error message on session once logged in
+		if(isset($_SESSION['login_error'])) unset($_SESSION['login_error']);
+
 		return true;
 	} else {
 		$_SESSION['login_error'] = 'Wrong username or password';
