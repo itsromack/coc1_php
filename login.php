@@ -17,7 +17,7 @@ if(!empty($_POST))
 	    // redirect to a specific page
 		header('Location: ' . $page);
 	} else {
-		echo $_SESSION['login_error'];
+		echo $_SESSION['message'];
 	}
 }
 ?>

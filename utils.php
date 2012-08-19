@@ -15,27 +15,23 @@ function login($username, $password)
 		$user = mysql_fetch_assoc($result);
 
 		if($user['is_disabled'] == 1){
-			$_SESSION['login_error'] = 'Account Disabled';
+			$_SESSION['message'] = 'Account Disabled';
 			return false;
 		}
 
 		if($user['days_left'] < 1){
-			$_SESSION['login_error'] = 'Expired User Account';
+			$_SESSION['message'] = 'Expired User Account';
 			return false;
 		}
 		
-		$_SESSION['user'] = 
-		    array(
-		        'username' => $username,
-		        'type' => $user['type']
-		    );
+		$_SESSION['user'] = $user;
 
 		// remove error message on session once logged in
-		if(isset($_SESSION['login_error'])) unset($_SESSION['login_error']);
+		if(isset($_SESSION['message'])) unset($_SESSION['message']);
 
 		return true;
 	} else {
-		$_SESSION['login_error'] = 'Wrong username or password';
+		$_SESSION['message'] = 'Wrong username or password';
 		return false;
 	}
 }
@@ -76,4 +72,54 @@ function search_books($isbn='', $title='', $publisher='', $author='', $copyright
 	}
 	return $books;
 }
+
+/**
+* add book to cart
+*/
+function add_to_cart($isbn)
+{
+	if(isset($_SESSION['user']['cart']))
+	{
+		$number_of_books_reserved = count($_SESSION['user']['cart']);
+		if($number_of_books_reserved >= 3)
+		{
+			$_SESSION['message'] = 'You can only reserve 3 books.';
+			return false;
+		}
+	}
+	$_SESSION['user']['cart'][] = $isbn;
+	return true;
+}
+
+/**
+* remove from cart
+*/
+function remove_from_cart($isbn)
+{
+	if(isset($_SESSION['user']['cart']))
+	{
+		$cart = $_SESSION['user']['cart'];
+		if(in_array($isbn, $cart))
+		{
+			// find key of the ISBN that will be deleted
+			$isbn_key = array_search($isbn, $cart);
+			if($isbn_key != FALSE)
+			{
+				unset($_SESSION['user']['cart'][$isbn_key]);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function reserve_books()
+{
+	$user = $_SESSION['user'];
+	$books = $_SESSION['user']['cart'];
+	//
+	// TODO: add reserve books script
+	//
+}
+
 ?>
