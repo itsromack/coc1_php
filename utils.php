@@ -43,6 +43,29 @@ function login($username, $password)
 	}
 }
 
+function logout()
+{
+	unset($_SESSION['user']);
+	unset($_SESSION['is_logged_in']);
+	unset($_SESSION['message']);
+}
+
+/**
+* return status of access
+*/
+function is_logged_in()
+{
+	return (isset($_SESSION['is_logged_in'])) ? $_SESSION['is_logged_in'] : false;
+}
+
+/**
+* return logged in user
+*/
+function get_logged_in_user()
+{
+	return (isset($_SESSION['user'])) ? $_SESSION['user']['username'] : 'Guest';
+}
+
 /**
 * retrieve all books
 */
@@ -59,6 +82,17 @@ function get_all_books()
 		}
 	}
 	return $books;	
+}
+
+function get_book($isbn = null)
+{
+	if(!is_null($isbn))
+	{
+		$query = "SELECT * FROM books WHERE isbn LIKE '{$isbn}'";
+		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+		if(mysql_num_rows($result) > 0) return mysql_fetch_assoc($result);
+	}
+	return false;
 }
 
 /**
@@ -126,6 +160,14 @@ function remove_from_cart($isbn)
 }
 
 /**
+* return books in cart
+*/
+function get_cart()
+{
+	return (isset($_SESSION['user']['cart'])) ? $_SESSION['user']['cart'] : false;
+}
+
+/**
 * reserve all books
 */
 function reserve_books()
@@ -181,6 +223,12 @@ function borrow_book($reservation_id)
 	// TODO
 	$query = "INSERT INTO borrowed_books (isbn, user_id, date_borrowed, is_returned) ".
 		"(SELECT isbn, user_id, NOW(), 0 FROM reserved_books WHERE id = {$reservation_id})";
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+
+	if(mysql_affected_rows() > 0)
+	{
+		$reserved_book = mysql_fetch_assoc($result);
+	}
 }
 
 /**
@@ -190,7 +238,7 @@ function return_books($borrowed_book_id)
 {
 	// TODO
 	$query = "UPDATE borrowed_books SET ".
-		" is_returned = 1, date_returned = NOW(), [DAYS_PENALTY]"
+		" is_returned = 1, date_returned = NOW(), [DAYS_PENALTY]" .
 		" WHERE id = {$borrowed_book_id}";
 }
 ?>
