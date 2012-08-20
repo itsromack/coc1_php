@@ -35,6 +35,8 @@ function login($username, $password)
 		// remove error message on session once logged in
 		if(isset($_SESSION['message'])) unset($_SESSION['message']);
 
+		$_SESSION['message'] = 'Successful Login';
+
 		$_SESSION['is_logged_in'] = TRUE;
 
 		return true;
@@ -163,16 +165,20 @@ function remove_from_cart($isbn)
 	if(isset($_SESSION['user']['cart']))
 	{
 		$cart = $_SESSION['user']['cart'];
-		error_log('cart: ' . print_r($cart, true));
+		
 		if(in_array($isbn, $cart))
 		{
-			for($i = 0; $i < count($cart); $i++)
+			error_log('Books in cart: ' . count($cart));
+
+			foreach ($cart as $key => $book_isbn)
 			{
-				if($isbn == $cart[$i])
+				if($isbn == $book_isbn)
 				{
-					unset($_SESSION['user']['cart'][$i]);
+					unset($_SESSION['user']['cart'][$key]);
 				}
 			}
+			$_SESSION['message'] = 'Removed a book from cart';
+			return true;
 		}
 	}
 	return false;

@@ -47,3 +47,8 @@ include_once("index_cart.php");
 	</tr>
 	<? endforeach; ?>
 </table>
+
+<hr>
+<pre>
+	<? print_r($_SESSION); ?>
+</pre>
