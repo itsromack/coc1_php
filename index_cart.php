@@ -1,4 +1,4 @@
-<div style="background-color:gold; padding: 10px; position:absolute; top: 40; left: 700;">
+<div style="background-color:gold; padding: 10px; position:absolute; top: 40; left: 750;">
 	<h4>Book Cart</h4>
 	<? $cart = get_cart(); ?>
 	<? if(get_cart() != false): ?>
