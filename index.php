@@ -9,6 +9,8 @@ if(isset($_GET['act']) && isset($_GET['isbn']))
 }
 
 $books = get_all_books();
+
+include_once("index_login.php");
 ?>
 
 <h1>Books</h1>
@@ -41,3 +43,10 @@ $books = get_all_books();
 	<? endforeach; ?>
 
 </table>
+
+<hr />
+<pre>
+<?
+print_r($_SESSION);
+?>
+</pre>
