@@ -2,24 +2,6 @@
 include_once("connect.php");
 include_once("utils.php");
 
-if(isset($_GET['act']) && isset($_GET['isbn']))
-{
-   	if ($_GET['act'] == 'add')
-   	{
-   		error_log('Adding ' . $isbn . ' to CART');
-   		add_to_cart($_GET['isbn']);
-   	}
-   	elseif($_GET['act'] == 'remove')
-   	{
-   		error_log('Removed ' . $isbn . ' from CART');
-   		remove_from_cart($_GET['isbn']);
-   	}
-}
-else
-{
-	$_SESSION['message'] = 'Howdy, have a nice day! ';
-}
-
 $books = get_all_books();
 
 include_once("index_login.php");
@@ -53,7 +35,11 @@ include_once("index_cart.php");
 		<td><?=$book['copyright']?></td>
 		<? if($_SESSION['is_logged_in'] === TRUE): ?>
 		<td>
-			<a href='index.php?isbn=<?=$book['isbn']?>&act=add'>add to cart</a>
+			<? if(is_in_cart($book['isbn'])): ?>
+			Already in Cart
+			<? else: ?>
+			<a href='cart.php?isbn=<?=$book['isbn']?>&act=add'>add to cart</a>
+			<? endif; ?>
 		</td>
 		<? endif; ?>
 	</tr>

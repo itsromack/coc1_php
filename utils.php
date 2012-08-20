@@ -129,6 +129,12 @@ function add_to_cart($isbn)
 {
 	if(isset($_SESSION['user']['cart']))
 	{
+		if(array_search(needle, haystack))
+		{
+			$_SESSION['message'] = 'The book is already in the cart.';
+			return false;
+		}
+
 		$number_of_books_reserved = count($_SESSION['user']['cart']);
 		if($number_of_books_reserved >= 3)
 		{
@@ -151,12 +157,12 @@ function remove_from_cart($isbn)
 		$cart = $_SESSION['user']['cart'];
 		if(in_array($isbn, $cart))
 		{
-			// find key of the ISBN that will be deleted
-			$isbn_key = array_search($isbn, $cart);
-			if($isbn_key != FALSE)
+			for($i = 0; $i < count($cart); $i++)
 			{
-				unset($_SESSION['user']['cart'][$isbn_key]);
-				return true;
+				if($isbn == $cart[$i])
+				{
+					unset($_SESSION['user']['cart'][$i]);
+				}
 			}
 		}
 	}
@@ -169,6 +175,14 @@ function remove_from_cart($isbn)
 function get_cart()
 {
 	return (isset($_SESSION['user']['cart'])) ? $_SESSION['user']['cart'] : false;
+}
+
+/**
+* return true if book is in cart
+*/
+function is_in_cart($isbn)
+{
+	return in_array($isbn, $_SESSION['user']['cart']);
 }
 
 /**
