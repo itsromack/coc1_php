@@ -55,12 +55,13 @@ CREATE TABLE `users` (
   `password` varchar(20) DEFAULT NULL,
   `expiry_date` date NOT NULL,
   `type` varchar(10) NOT NULL,
+  `is_disabled` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `users` (`id`, `username`, `password`, `expiry_date`, `type`) VALUES
-(1, 'superuser',  'secret123',  '2013-01-01', 'admin'),
-(2, 'normaluser', 'secret123',  '2013-01-01', 'normal'),
-(3, 'expireduser',  'secret123',  '2012-01-01', 'normal');
+INSERT INTO `users` (`id`, `username`, `password`, `expiry_date`, `type`, `is_disabled`) VALUES
+(1, 'superuser',  'secret123',  '2013-01-01', 'admin',  0),
+(2, 'normaluser', 'secret123',  '2013-01-01', 'normal', 0),
+(3, 'expireduser',  'secret123',  '2012-01-01', 'normal', 0);
 
--- 2012-08-19 19:25:41
+-- 2012-08-20 22:35:30
