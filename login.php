@@ -20,6 +20,14 @@ if(!empty($_POST))
 		echo $_SESSION['message'];
 	}
 }
+
+if(isset($_GET['logout']))
+{
+	if($_GET['logout'] == 1)
+	{
+		logout();
+	}
+}
 ?>
 
 <h1>Login</h1>
@@ -28,10 +36,3 @@ Username: <input type='text' name='username' /><br />
 Password: <input type='password' name='password' /><br />
 <input type='submit' value='Login' />
 </form>
-
-<hr />
-<pre>
-<?
-print_r($_SESSION);
-?>
-</pre>
