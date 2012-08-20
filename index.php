@@ -2,7 +2,9 @@
 include_once("connect.php");
 include_once("utils.php");
 
-$books = get_all_books();
+$books = (!empty($_POST)) 
+	? search_books($_POST['isbn'], $_POST['title'], $_POST['publisher'], $_POST['author'], $_POST['copyright']) 
+	: get_all_books();
 
 include_once("index_login.php");
 
@@ -10,8 +12,9 @@ echo "<span style='background-color:pink; padding: 10px;'>{$_SESSION['message']}
 
 include_once("index_cart.php");
 ?>
-
 <h1>Books</h1>
+
+<?  include_once("index_search.php"); ?>
 
 <table border='1' cellpadding='7'>
 	<tr>
@@ -24,7 +27,6 @@ include_once("index_cart.php");
 		<th>Reserve</th>
 		<? endif; ?>
 	</tr>
-
 	<? $row = 1 ?>
 	<? foreach($books as $book): ?>
 	<tr <? if($row++ % 2 != 0) echo 'style="background-color:silver"';?>>
@@ -44,12 +46,4 @@ include_once("index_cart.php");
 		<? endif; ?>
 	</tr>
 	<? endforeach; ?>
-
 </table>
-
-<hr />
-<pre>
-<?
-print_r($_SESSION);
-?>
-</pre>
