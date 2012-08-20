@@ -89,8 +89,10 @@ function get_book($isbn = null)
 	if(!is_null($isbn))
 	{
 		$query = "SELECT * FROM books WHERE isbn LIKE '{$isbn}'";
+		
 		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
-		if(mysql_num_rows($result) > 0) return mysql_fetch_assoc($result);
+
+		return (mysql_num_rows($result) > 0) ? mysql_fetch_assoc($result) : false;
 	}
 	return false;
 }
