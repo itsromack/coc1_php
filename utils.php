@@ -101,15 +101,20 @@ function get_book($isbn = null)
 /**
 * dynamic book search
 */
-function search_books($isbn='', $title='', $publisher='', $author='', $copyright=0)
+function search_books($isbn='', $title='', $publisher='', $author='', $copyright='ALL')
 {
-	$query = "SELECT * FROM books WHERE " .
-		"isbn LIKE '%{$isbn}% '" .
-		" OR title LIKE '%{$title}%'" .
-		" OR publisher LIKE '%{$publisher}%'" .
-		" OR author LIKE '%{$author}%'" .
-		" OR copyright = {$copyright}";
+	$query = "SELECT * FROM books WHERE 1=1 ";
+
+	if(strlen($isbn) > 0) $query .= "AND isbn LIKE '%{$isbn}%'";
+	if(strlen($title) > 0) $query .= "AND title LIKE '%{$title}%'";
+	if(strlen($publisher) > 0) $query .= "AND publisher LIKE '%{$publisher}%'";
+	if(strlen($author) > 0) $query .= "AND author LIKE '%{$author}%'";
+	if($copyright != "ALL") $query .= "AND copyright = {$copyright}";
+
+	error_log('Search Books Query: ' . $query);
+
 	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+
 	$books = array();
 
 	if(mysql_num_rows($result) > 0)
@@ -119,6 +124,9 @@ function search_books($isbn='', $title='', $publisher='', $author='', $copyright
 			$books[] = $row;
 		}
 	}
+	
+	$_SESSION['message'] = 'Search Results';
+
 	return $books;
 }
 
@@ -129,7 +137,7 @@ function add_to_cart($isbn)
 {
 	if(isset($_SESSION['user']['cart']))
 	{
-		if(array_search(needle, haystack))
+		if(array_search($isbn, $_SESSION['user']['cart']))
 		{
 			$_SESSION['message'] = 'The book is already in the cart.';
 			return false;
@@ -155,6 +163,7 @@ function remove_from_cart($isbn)
 	if(isset($_SESSION['user']['cart']))
 	{
 		$cart = $_SESSION['user']['cart'];
+		error_log('cart: ' . print_r($cart, true));
 		if(in_array($isbn, $cart))
 		{
 			for($i = 0; $i < count($cart); $i++)
