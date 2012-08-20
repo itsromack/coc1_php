@@ -30,6 +30,7 @@ function login($username, $password)
 		}
 		
 		$_SESSION['user'] = $user;
+		$_SESSION['user']['cart'] = array();
 
 		// remove error message on session once logged in
 		if(isset($_SESSION['message'])) unset($_SESSION['message']);
@@ -135,6 +136,7 @@ function add_to_cart($isbn)
 			return false;
 		}
 	}
+	$_SESSION['message'] = 'Added a book to cart';
 	$_SESSION['user']['cart'][] = $isbn;
 	return true;
 }
