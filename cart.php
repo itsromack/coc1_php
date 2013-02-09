@@ -2,23 +2,31 @@
 include_once("connect.php");
 include_once("utils.php");
 
-if(isset($_GET['act']) && isset($_GET['isbn']))
-{
-   	if ($_GET['act'] == 'add')
-   	{
-   		error_log('Adding ' . $isbn . ' to CART');
-   		add_to_cart($_GET['isbn']);
-   	}
+if(!empty($_GET['act'])) {
 
-   	if($_GET['act'] == 'remove')
-   	{
-   		error_log('Removed ' . $_GET['isbn'] . ' from CART');
-   		remove_from_cart($_GET['isbn']);
-   	}
-}
-else
-{
+   	if ($_GET['act'] == 'add') {
+
+         add_to_cart($_GET['isbn']);
+
+      } elseif ($_GET['act'] == 'remove') {
+
+         remove_from_cart($_GET['isbn']);
+
+      } elseif ($_GET['act'] == 'Clear') {
+
+         clear_book_cart();
+
+      } elseif ($_GET['act'] == 'Reserve') {
+
+         reserve_books();
+
+      }
+
+} else {
+
 	$_SESSION['message'] = 'Howdy, have a nice day! ';
+
 }
+
 header('Location: index.php');
 ?>

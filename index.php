@@ -8,7 +8,9 @@ $books = (!empty($_POST))
 
 include_once("index_login.php");
 
-echo "<span style='background-color:pink; padding: 10px;'>{$_SESSION['message']}</span>";
+if (!empty($_SESSION['message'])) {
+	echo "<span style='background-color:pink; padding: 10px;'>{$_SESSION['message']}</span>";
+}
 
 include_once("index_cart.php");
 ?>
@@ -27,25 +29,29 @@ include_once("index_cart.php");
 		<th>Reserve</th>
 		<? endif; ?>
 	</tr>
-	<? $row = 1 ?>
-	<? foreach($books as $book): ?>
-	<tr <? if($row++ % 2 != 0) echo 'style="background-color:silver"';?>>
-		<td><?=$book['isbn']?></td>
-		<td><?=$book['title']?></td>
-		<td><?=$book['publisher']?></td>
-		<td><?=$book['author']?></td>
-		<td><?=$book['copyright']?></td>
-		<? if($_SESSION['is_logged_in'] === TRUE): ?>
-		<td>
-			<? if(is_in_cart($book['isbn'])): ?>
-			Already in Cart
-			<? else: ?>
-			<a href='cart.php?isbn=<?=$book['isbn']?>&act=add'>add to cart</a>
+	<? if (!empty($books)): ?>
+		<? $row = 1 ?>
+		<? foreach($books as $book): ?>
+		<tr <? if($row++ % 2 != 0) echo 'style="background-color:silver"';?>>
+			<td><?=$book['isbn']?></td>
+			<td><?=$book['title']?></td>
+			<td><?=$book['publisher']?></td>
+			<td><?=$book['author']?></td>
+			<td><?=$book['copyright']?></td>
+			<? if($_SESSION['is_logged_in'] === TRUE): ?>
+			<td>
+				<? if(is_in_cart($book['isbn'])): ?>
+				Already in Cart
+				<? else: ?>
+				<a href='cart.php?isbn=<?=$book['isbn']?>&act=add'>add to cart</a>
+				<? endif; ?>
+			</td>
 			<? endif; ?>
-		</td>
-		<? endif; ?>
-	</tr>
-	<? endforeach; ?>
+		</tr>
+		<? endforeach; ?>
+	<? else: ?>
+		<tr><td colspan="6">No items found</td></tr>
+	<? endif?>
 </table>
 
 <hr>
